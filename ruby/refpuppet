@@ -1,0 +1,33 @@
+#!/bin/bash
+#refpuppet ()
+# $1 = host  $2 = "prescript"  $3 = "postscript"
+set -x
+
+if [ -z "$1" ]; then
+  return "will not work without host.  Useage: refpuppet host [prescript] [postscript]"
+fi
+
+if [ -z "$2" ]; then
+  echo "no pre-script, ok"
+else
+  pre="$2"
+  echo "got pre: [$pre]"
+fi
+
+if [ -z "$3" ]; then
+  echo "no post-script, ok"
+else
+  post="$3"
+  echo "got post: [$post]"
+fi
+
+#
+host="$1"
+
+echo "refreshing puppet on $host with [$pre] puppet agent -t [$post]..."
+
+ssh -q -i /root/.ssh/commonkey.txt $host <<_ENDSC_
+$pre
+puppet agent -t
+$post
+_ENDSC_
